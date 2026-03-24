@@ -19,9 +19,21 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 5000;
 // const corsOptions = {Credential:true, origin: process.env.URL || '*'};
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://admin.hclient.in"
+];
+
 const corsOptions = {
   credentials: true,
-  origin: "http://localhost:3000"
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
 };
 
 app.use(cors(corsOptions));
