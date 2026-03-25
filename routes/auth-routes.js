@@ -12,11 +12,14 @@ function hashToken(token) {
     return crypto.createHash("sha256").update(token).digest("hex");
 }
 
+const isProd = process.env.NODE_ENV === "production";
+
 const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
     path: "/",
+    ...(isProd && { domain: ".hclient.in" })
 };
 
 router.post("/login", async (req, res) => {
